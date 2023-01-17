@@ -80,11 +80,12 @@ const runAction = () => {
 	const appRoot = getInput("app_root") || pkgRoot;
 
 	const pkgJsonPath = join(pkgRoot, "package.json");
-	const pkgLockPath = join(pkgRoot, "package-lock.json");
+	// const pkgLockPath = join(pkgRoot, "package-lock.json");
+	const pnpmLockPath = join(pkgRoot, "pnpm-lock.yaml");
 
 	// Determine whether NPM should be used to run commands (instead of Yarn, which is the default)
-	const useNpm = existsSync(pkgLockPath);
-	log(`Will run ${useNpm ? "NPM" : "Yarn"} commands in directory "${pkgRoot}"`);
+	const usepnpm = existsSync(pnpmLockPath);
+	log(`Will run ${usepnpm ? "pnpm" : "npm"} commands in directory "${pkgRoot}"`);
 
 	// Make sure `package.json` file exists
 	if (!existsSync(pkgJsonPath)) {
@@ -109,8 +110,8 @@ const runAction = () => {
 	if (skipInstall) {
 		log("Skipping install script because `skip_install` option is set");
 	} else {
-		log(`Installing dependencies using ${useNpm ? "NPM" : "Yarn"}…`);
-		run(useNpm ? "npm install" : "yarn", pkgRoot);
+		log(`Installing dependencies using ${usepnpm ? "pnpm" : "npm"}…`);
+		run(usepnpm ? "pnpm install" : "npm install", pkgRoot);
 	}
 
 	// Run NPM build script if it exists
@@ -118,14 +119,14 @@ const runAction = () => {
 		log("Skipping build script because `skip_build` option is set");
 	} else {
 		log("Running the build script…");
-		if (useNpm) {
-			run(`npm run ${buildScriptName} --if-present`, pkgRoot);
+		if (usepnpm) {
+			run(`pnpm run ${buildScriptName} --if-present`, pkgRoot);
 		} else {
 			// TODO: Use `yarn run ${buildScriptName} --if-present` once supported
 			// https://github.com/yarnpkg/yarn/issues/6894
 			const pkgJson = JSON.parse(readFileSync(pkgJsonPath, "utf8"));
 			if (pkgJson.scripts && pkgJson.scripts[buildScriptName]) {
-				run(`yarn run ${buildScriptName}`, pkgRoot);
+				run(`pnpm run ${buildScriptName}`, pkgRoot);
 			}
 		}
 	}
@@ -135,7 +136,7 @@ const runAction = () => {
 	for (let i = 0; i < maxAttempts; i += 1) {
 		try {
 			run(
-				`${useNpm ? "npx --no-install" : "yarn run"} ${cmd} --${platform} ${
+				`${usepnpm ? "pnpm run" : "npx --no-install"} ${cmd} --${platform} ${
 					release ? "--publish always" : ""
 				} ${args}`,
 				appRoot,
