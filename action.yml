@@ -1,6 +1,6 @@
-name: Electron Builder Action
-author: Samuel Meuli
-description: GitHub Action for building and releasing Electron apps
+name: MAA ElectronUI Builder
+author: bakashigure
+description: GitHub Action for building MAA ElectronUI
 
 inputs:
   github_token:
