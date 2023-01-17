@@ -136,7 +136,7 @@ const runAction = () => {
 	for (let i = 0; i < maxAttempts; i += 1) {
 		try {
 			run(
-				`${usepnpm ? "pnpm run" : "npx --no-install"} ${cmd} --${platform} ${
+				`${usepnpm ? "pnpm" : "npx --no-install"} ${cmd} --${platform} ${
 					release ? "--publish always" : ""
 				} ${args}`,
 				appRoot,
