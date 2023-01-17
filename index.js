@@ -133,7 +133,6 @@ const runAction = () => {
 
 	log(`Building${release ? " and releasing" : ""} the Electron app…`);
 	const cmd = useVueCli ? "vue-cli-service electron:build" : "electron-builder";
-	for (let i = 0; i < maxAttempts; i += 1) {
 		try {
 			run(
 				`${usepnpm ? "pnpm" : "npx --no-install"} ${cmd} --${platform} ${
@@ -141,16 +140,9 @@ const runAction = () => {
 				} ${args}`,
 				appRoot,
 			);
-			break;
 		} catch (err) {
-			if (i < maxAttempts - 1) {
-				log(`Attempt ${i + 1} failed:`);
 				log(err);
-			} else {
-				throw err;
 			}
-		}
-	}
 };
 
 runAction();
