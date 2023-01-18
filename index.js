@@ -133,16 +133,9 @@ const runAction = () => {
 
 	log(`Building${release ? " and releasing" : ""} the Electron app…`);
 	const cmd = useVueCli ? "vue-cli-service electron:build" : "electron-builder";
-		try {
-			run(
-				`${usepnpm ? "pnpm" : "npx --no-install"} ${cmd} --${platform} ${
-					release ? "--publish always" : ""
-				} ${args}`,
-				appRoot,
-			);
-		} catch (err) {
-				log(err);
-			}
+		run(`${usepnpm ? "pnpm" : "npx --no-install"} ${cmd} --${platform} ${
+			release ? "--publish always" : ""} ${args}`,
+			appRoot,);
 };
 
 runAction();
